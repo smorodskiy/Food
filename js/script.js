@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+
   // Шаблон карт(высота, ширина, название меню, текст меню, цена)
   class Cards {
     constructor(img, imgalt, title, description, price, parent) {
@@ -15,10 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     showCard() {
-      console.log(this.parent);
+      //console.log(this.parent);
       const element = document.createElement("div");
-      this.parent.innerHTML = `            
-              <div class="menu__item">
+      element.classList.add('menu__item');
+      element.innerHTML = `            
+              
               <img src="${this.img}" alt="${this.imgalt}">
               <h3 class="menu__item-subtitle">${this.title}</h3>
               <div class="menu__item-descr">${this.description}</div>
@@ -27,33 +29,15 @@ document.addEventListener("DOMContentLoaded", () => {
                   <div class="menu__item-cost">Цена:</div>
                   <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
               </div>
-              </div>
+             
               `;
-
+      
       this.parent.append(element);
     }
   }
 
-  // // Добавляет карту на страницу
-  // new Cards(
-  //   'Меню "Фитнес"',
-  //   'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-  //   229,
-  //   "img/tabs/vegy.jpg",
-  //   '.menu .container'
-  // );
-
-  // new Cards(
-  //   '1Меню "Фитнес"',
-  //   'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-  //   229,
-  //   "img/tabs/vegy.jpg",
-  //   '.menu .container'
-  // );
-
-  // console.log(card);
-  // Вывод кароточек из базы
-  // На карточку можно кликать и узнавать подробности
+  // new Cards('img/tabs/vegy.jpg', 'vegy', 'Фитнес', 'description', 123, '.menu .container');
+  // new Cards('img/tabs/vegy.jpg', 'vegy', 'Фитнес1', 'description', 123, '.menu .container');
 
   // Переменный с элементами Верхнего банера страницы
   const tabs = document.querySelector(".tabheader__items"),
@@ -61,22 +45,36 @@ document.addEventListener("DOMContentLoaded", () => {
     tabItems = document.querySelectorAll(".tabheader__item"),
     // Банер
     tabContent = document.querySelectorAll(".tabcontent"),
-    // Банер
-    submitBtn = document.querySelector("[data-submit]");
+    
+    
+    // Кнопка Связаться с нами
+    submitBtn = document.querySelectorAll("[data-submit]");
+    // Модальное окно
+    modal = document.querySelector(".modal");
+    // Кнопка закрыть модальное окно
+    closeModalBtn = document.querySelector("[data-modal]");
 
-    submitBtn.addEventListener("click", () => {
-        alert('23');
-        
+
+    submitBtn.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        modal.style.display = "block";        
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    closeModalBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+        document.body.style.overflow = 'auto';
     });
 
 
-  // Скрыть элемент
+  // Скрыть все баннеры вверху
   function hideAllTabs() {
     tabContent.forEach((element) => {
       element.style.display = "none";
     });
   }
-
+  // Убрать активный класс из списка
   function removeAllActiveClass() {
     tabItems.forEach((element) => {
       element.classList.remove("tabheader__item_active");
@@ -161,22 +159,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, 1000);
 
+  // Get запрос на сервер и получение данный в виде JSON
   fetch("http://localhost:3000/menu")
     .then((response) => response.json())
-    .then((json) => getData(json));
+    .then((json) => renderData(json));
 
-  function getData(jsonData) {
+  // Отобразить данные на странице
+  function renderData(jsonData) {
     jsonData.forEach(({ img, imgalt, title, description, price }) => {
       new Cards(img, imgalt, title, description, price, ".menu .container");
     });
   }
 
-  // function test(a, b, callback) {
-  //     let c = a + b;
-  //     callback(c);
-  // }
-
-  // test(1, 4, (num) => {
-  //     console.log(num);
-  // });
 });
