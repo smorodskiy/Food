@@ -182,13 +182,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const callToBtn = document.querySelector("[data-call]");
   const forms = document.querySelectorAll("form");
 
   forms.forEach((form) => {
     prepairData(form);
   });
 
+  // Отправка данных
   async function postData(url, obj) {
     const postData = await fetch("http://localhost:3000/requests", {
       method: "POST",
@@ -198,30 +198,71 @@ document.addEventListener("DOMContentLoaded", () => {
       body: obj,
     });
 
+    if (!postData.ok) {
+      alert("Ошибка HTTP: " + postData.status);
+    }
+
     return await postData.json();
   }
 
+  // Формирование данных и отправка
   function prepairData(form) {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
 
       const formData = new FormData(form);
-      // const request = new XMLHttpRequest();
-      // request.open('POST', 'http://localhost:3000/requests');
-      // request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
       let json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-      postData("http://localhost:3000/requests", json)
-        .then( data => {
-          console.log(data);
-          
-        });
-
-      // request.send(JSON.stringify(object));
+      postData("http://localhost:3000/requests", json);
     });
   }
 
-  // fetch("http://localhost:3000/menu")
-  //   .then((response) => response.json())
-  //   .then((json) => renderData(json));
+  // Слайд
+  const next = document.querySelector(".offer__slider-next");
+  const prev = document.querySelector(".offer__slider-prev");
+
+  const slides = [
+    { src: "pepper.jpg", alt: "pepper" },
+    { src: "food-12.jpg", alt: "food" },
+    { src: "olive-oil.jpg", alt: "oil" },
+    { src: "paprika.jpg", alt: "paprika" },
+  ];
+  const numItems = slides.length - 1;
+  let currentSlide = 0;
+
+  const currentSlideTitle = document.querySelector(
+    ".offer__slider-counter #current"
+  );
+  const sliderWrapper = document.querySelector(".offer__slider-wrapper");
+
+  function imgElement(numOfSlide) {
+    const element = document.createElement("div");
+    element.classList.add("offer__slide");
+    element.innerHTML = `<img src=\"img/slider/${slides[numOfSlide].src}\" alt=\"${slides[numOfSlide].alt}\" </img>`;
+    return element;
+  }
+
+  function changeImage(opt) {
+    const slide = document.querySelector(".offer__slide");
+    currentSlide += opt;
+
+    console.log(currentSlide);
+    slide.remove();
+    if (currentSlide < 0) {
+      currentSlide = numItems;
+    }
+    if (currentSlide > numItems) {
+      currentSlide = 0;
+    }
+    console.log(currentSlide);
+    currentSlideTitle.innerHTML = `0${currentSlide + 1}`;
+    sliderWrapper.append(imgElement(currentSlide));
+  }
+
+  next.addEventListener("click", () => {
+    changeImage(1);
+  });
+  prev.addEventListener("click", () => {
+    changeImage(-1);
+  });
 });
