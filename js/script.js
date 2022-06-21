@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     slide.remove();
 
-    if (currentSlide < 0) {
+    if (currentSlide < 0) { 
       currentSlide = numItems;
     }
     if (currentSlide > numItems) {
