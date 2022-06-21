@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
   // Шаблон карт(высота, ширина, название меню, текст меню, цена)
   class Cards {
     constructor(img, imgalt, title, description, price, parent) {
@@ -18,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showCard() {
       //console.log(this.parent);
       const element = document.createElement("div");
-      element.classList.add('menu__item');
+      element.classList.add("menu__item");
       element.innerHTML = `            
               
               <img src="${this.img}" alt="${this.imgalt}">
@@ -31,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
              
               `;
-      
+
       this.parent.append(element);
     }
   }
@@ -45,28 +44,40 @@ document.addEventListener("DOMContentLoaded", () => {
     tabItems = document.querySelectorAll(".tabheader__item"),
     // Банер
     tabContent = document.querySelectorAll(".tabcontent"),
-    
-    
     // Кнопка Связаться с нами
     submitBtn = document.querySelectorAll("[data-submit]");
-    // Модальное окно
-    modal = document.querySelector(".modal");
-    // Кнопка закрыть модальное окно
-    closeModalBtn = document.querySelector("[data-modal]");
+  // Модальное окно
+  modal = document.querySelector(".modal");
+  // Кнопка закрыть модальное окно
+  closeModalBtn = document.querySelector("[data-modal]");
 
+  // Закрыть модальное окно
+  function closeModal() {
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+  }
 
-    submitBtn.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        modal.style.display = "block";        
-        document.body.style.overflow = 'hidden';
-      });
+  modal.addEventListener("click", (event) => {
+    const e = event.target;
+    if (e === modal) {
+      closeModal();
+    }
+  });
+
+  submitBtn.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      modal.style.display = "block";
+      document.body.style.overflow = "hidden";
     });
+  });
 
-    closeModalBtn.addEventListener("click", () => {
-        modal.style.display = "none";
-        document.body.style.overflow = 'auto';
-    });
+  closeModalBtn.addEventListener("click", closeModal);
 
+  document.addEventListener("keydown", (event) => {
+    if (event.code == "Escape" && modal.style.display == "block") {
+      closeModal();
+    }
+  });
 
   // Скрыть все баннеры вверху
   function hideAllTabs() {
@@ -171,4 +182,46 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const callToBtn = document.querySelector("[data-call]");
+  const forms = document.querySelectorAll("form");
+
+  forms.forEach((form) => {
+    prepairData(form);
+  });
+
+  async function postData(url, obj) {
+    const postData = await fetch("http://localhost:3000/requests", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: obj,
+    });
+
+    return await postData.json();
+  }
+
+  function prepairData(form) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      // const request = new XMLHttpRequest();
+      // request.open('POST', 'http://localhost:3000/requests');
+      // request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+      let json = JSON.stringify(Object.fromEntries(formData.entries()));
+
+      postData("http://localhost:3000/requests", json)
+        .then( data => {
+          console.log(data);
+          
+        });
+
+      // request.send(JSON.stringify(object));
+    });
+  }
+
+  // fetch("http://localhost:3000/menu")
+  //   .then((response) => response.json())
+  //   .then((json) => renderData(json));
 });
