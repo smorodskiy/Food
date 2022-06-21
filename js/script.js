@@ -220,6 +220,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Слайд
   const next = document.querySelector(".offer__slider-next");
   const prev = document.querySelector(".offer__slider-prev");
+  const currentSlideTitle = document.querySelector(".offer__slider-counter #current");
+  const sliderWrapper = document.querySelector(".offer__slider-wrapper");
+
 
   const slides = [
     { src: "pepper.jpg", alt: "pepper" },
@@ -227,14 +230,10 @@ document.addEventListener("DOMContentLoaded", () => {
     { src: "olive-oil.jpg", alt: "oil" },
     { src: "paprika.jpg", alt: "paprika" },
   ];
+  
   const numItems = slides.length - 1;
   let currentSlide = 0;
-
-  const currentSlideTitle = document.querySelector(
-    ".offer__slider-counter #current"
-  );
-  const sliderWrapper = document.querySelector(".offer__slider-wrapper");
-
+  
   function imgElement(numOfSlide) {
     const element = document.createElement("div");
     element.classList.add("offer__slide");
@@ -245,17 +244,23 @@ document.addEventListener("DOMContentLoaded", () => {
   function changeImage(opt) {
     const slide = document.querySelector(".offer__slide");
     currentSlide += opt;
-
-    console.log(currentSlide);
+    
     slide.remove();
+
     if (currentSlide < 0) {
       currentSlide = numItems;
     }
     if (currentSlide > numItems) {
       currentSlide = 0;
     }
-    console.log(currentSlide);
-    currentSlideTitle.innerHTML = `0${currentSlide + 1}`;
+
+    if (currentSlide > 9) {
+      currentSlideTitle.innerHTML = currentSlide + 1;
+    } else {
+      currentSlideTitle.innerHTML = `0${currentSlide + 1}`;
+    }
+    
+
     sliderWrapper.append(imgElement(currentSlide));
   }
 
@@ -265,4 +270,5 @@ document.addEventListener("DOMContentLoaded", () => {
   prev.addEventListener("click", () => {
     changeImage(-1);
   });
+
 });
