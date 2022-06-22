@@ -222,75 +222,52 @@ document.addEventListener("DOMContentLoaded", () => {
   // Prev button
   const prev = document.querySelector(".offer__slider-prev");
   // Current slide number in the Title
-  const currentSlideTitle = document.querySelector(".offer__slider-counter #current");
-  
+  const currentSlideTitle = document.querySelector(
+    ".offer__slider-counter #current"
+  );
+
   const sliderWrapper = document.querySelector(".offer__slider-wrapper");
-  const secWrapper = document.querySelector('.offer__slider-secwrap');
+  const secWrapper = document.querySelector(".offer__slider-secwrap");
   const slides = document.querySelectorAll(".offer__slide");
   const slideContainer = document.querySelector(".offer__slider-container");
-  
+
   const indicator = document.querySelector(".slider__indicator");
   const dots = document.querySelectorAll(".slider__dot");
-
   // Get current position of slide
-  const currentPos = secWrapper.getAttribute('data-pos');
-  // const dataPosDot = secWrapper.getAttribute('data-pos');
-  dots.forEach((dot) => {
-    dot.addEventListener('click', (e) => {
-      const event = e.target;
-      const newPos = e.getAttribute('data-pos');
-      if (newPos > currentPos) {
-
-
- 
-
-        
-			
-          
-
-
-
-      }
-      
-      if (newPos < currentPos) {
-
-      }
-    });
-  })
-
-
-
+  const currentPos = secWrapper.getAttribute("data-pos");
 
   // Width of slide
   const slideWidth = sliderWrapper.clientWidth;
   // Total slides
   const totalSlides = slides.length - 1;
-  
-  let curRight = 0;
+
   let currentSlide = 0;
-  
+  let positionPX = 0;
+  // console.log(newPosition);
+
+  indicator.style.left = `${currentSlide * 2}em`;
   slideContainer.style.transition = "transform 1s";
 
-  function slideAction(direction) {
-    if (direction == "right") {
-      ++currentSlide;
-      if (currentSlide > totalSlides) {
-        --currentSlide;
-      } else {
-        curRight += slideWidth;
-      }
+  function slideAction(shift) {
+    // Change global current slide
+    currentSlide += shift;
+    if (currentSlide < 0) {
+      currentSlide = 0;
     }
-    if (direction == "left") {
-      --currentSlide;
-      if (currentSlide < 0) {
-        ++currentSlide;
-      } else {
-        curRight -= slideWidth;
-      }
+    if (currentSlide > totalSlides) {
+      currentSlide = totalSlides;
     }
 
-    slideContainer.style.transform = `translateX(-${curRight}px)`;
+    positionPX = currentSlide * slideWidth;
 
+    // Set attr to div
+    secWrapper.setAttribute("data-pos", currentSlide);
+    // Moving slide
+    slideContainer.style.transform = `translateX(-${positionPX}px)`;
+    // Moving dots
+    indicator.style.left = `${currentSlide * 2}em`;
+
+    // Change title
     if (currentSlide > 9) {
       currentSlideTitle.innerHTML = currentSlide + 1;
     } else {
@@ -298,11 +275,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // const dataPosDot = secWrapper.getAttribute('data-pos');
+  dots.forEach((dot) => {
+    dot.addEventListener("click", (e) => {
+      // event.preventDefault();
+      const event = e.target;
+      const newPos = event.getAttribute("data-pos");
+
+      currentSlide = +newPos;
+      console.log(newPos);
+      slideAction(0);
+    });
+  });
+
   next.addEventListener("click", () => {
-    slideAction("right");
+    slideAction(1);
   });
 
   prev.addEventListener("click", () => {
-    slideAction("left");
+    slideAction(-1);
   });
 });
