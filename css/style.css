@@ -293,10 +293,9 @@ a {
 .slider__dots {
   display: flex;
   position: absolute;
-
-  width: 100%;
-  justify-content: center;
-  bottom: 10px;
+  bottom: 1em;
+  left: 50%;
+  transform: translateX(-50%);  
 }
 
 .slider__dots .slider__indicator {
@@ -306,6 +305,7 @@ a {
 
 .slider__indicator,
 .slider__dot {
+  cursor: pointer;
   display: block;
   margin: 0 0.5em;
   width: 1em;
