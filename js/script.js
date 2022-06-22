@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((response) => response.json())
     .then((json) => renderData(json));
 
-  // Отобразить данные на странице
+  // Отобразить меню на странице
   function renderData(jsonData) {
     jsonData.forEach(({ img, imgalt, title, description, price }) => {
       new Cards(img, imgalt, title, description, price, ".menu .container");
@@ -217,58 +217,92 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Слайд
+  // Next button
   const next = document.querySelector(".offer__slider-next");
+  // Prev button
   const prev = document.querySelector(".offer__slider-prev");
+  // Current slide number in the Title
   const currentSlideTitle = document.querySelector(".offer__slider-counter #current");
-  const sliderWrapper = document.querySelector(".offer__slider-wrapper");
-
-
-  const slides = [
-    { src: "pepper.jpg", alt: "pepper" },
-    { src: "food-12.jpg", alt: "food" },
-    { src: "olive-oil.jpg", alt: "oil" },
-    { src: "paprika.jpg", alt: "paprika" },
-  ];
   
-  const numItems = slides.length - 1;
+  const sliderWrapper = document.querySelector(".offer__slider-wrapper");
+  const secWrapper = document.querySelector('.offer__slider-secwrap');
+  const slides = document.querySelectorAll(".offer__slide");
+  const slideContainer = document.querySelector(".offer__slider-container");
+  
+  const indicator = document.querySelector(".slider__indicator");
+  const dots = document.querySelectorAll(".slider__dot");
+
+  // Get current position of slide
+  const currentPos = secWrapper.getAttribute('data-pos');
+  // const dataPosDot = secWrapper.getAttribute('data-pos');
+  dots.forEach((dot) => {
+    dot.addEventListener('click', (e) => {
+      const event = e.target;
+      const newPos = e.getAttribute('data-pos');
+      if (newPos > currentPos) {
+
+
+ 
+
+        
+			
+          
+
+
+
+      }
+      
+      if (newPos < currentPos) {
+
+      }
+    });
+  })
+
+
+
+
+  // Width of slide
+  const slideWidth = sliderWrapper.clientWidth;
+  // Total slides
+  const totalSlides = slides.length - 1;
+  
+  let curRight = 0;
   let currentSlide = 0;
   
-  function imgElement(numOfSlide) {
-    const element = document.createElement("div");
-    element.classList.add("offer__slide");
-    element.innerHTML = `<img src=\"img/slider/${slides[numOfSlide].src}\" alt=\"${slides[numOfSlide].alt}\" </img>`;
-    return element;
-  }
+  slideContainer.style.transition = "transform 1s";
 
-  function changeImage(opt) {
-    const slide = document.querySelector(".offer__slide");
-    currentSlide += opt;
-    
-    slide.remove();
+  function slideAction(direction) {
+    if (direction == "right") {
+      ++currentSlide;
+      if (currentSlide > totalSlides) {
+        --currentSlide;
+      } else {
+        curRight += slideWidth;
+      }
+    }
+    if (direction == "left") {
+      --currentSlide;
+      if (currentSlide < 0) {
+        ++currentSlide;
+      } else {
+        curRight -= slideWidth;
+      }
+    }
 
-    if (currentSlide < 0) { 
-      currentSlide = numItems;
-    }
-    if (currentSlide > numItems) {
-      currentSlide = 0;
-    }
+    slideContainer.style.transform = `translateX(-${curRight}px)`;
 
     if (currentSlide > 9) {
       currentSlideTitle.innerHTML = currentSlide + 1;
     } else {
       currentSlideTitle.innerHTML = `0${currentSlide + 1}`;
     }
-    
-
-    sliderWrapper.append(imgElement(currentSlide));
   }
 
   next.addEventListener("click", () => {
-    changeImage(1);
-  });
-  prev.addEventListener("click", () => {
-    changeImage(-1);
+    slideAction("right");
   });
 
+  prev.addEventListener("click", () => {
+    slideAction("left");
+  });
 });
