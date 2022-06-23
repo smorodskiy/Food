@@ -70,23 +70,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const medium = document.getElementById("medium");
   const high = document.getElementById("high");
   const activity = document.querySelector(".calculating__choose_big");
+  // result
+  const calcResult = document.querySelector(".calculating__result span");
 
-  let calcResult = document.querySelector(".calculating__result span");
-
-  let currentGender = 0;
-  let currentHeight = 175;
-  let currentWeight = 66;
-  let currentAge = 32;
-  let currentActivity = 2;
+  // init
+  let currentGender;
+  let currentHeight;
+  let currentWeight;
+  let currentAge;
+  let currentActivity;
 
   function calc(element, index) {
-
     if (element && element.classList.contains("calculating__choose_big")) {
-      currentActivity = index;
+      currentActivity = +index;
     }
     if (element && element.id == "gender") {
-      currentGender = index;
+      currentGender = +index;
     }
+
+    console.log(
+      `${currentGender} ${currentHeight} ${currentWeight} ${currentAge} ${currentActivity}`
+    );
+    if (
+      !isFinite(currentGender) ||
+      !isFinite(currentHeight) ||
+      !isFinite(currentWeight) ||
+      !isFinite(currentAge) ||
+      !isFinite(currentActivity)
+    ) {
+      calcResult.textContent = "____";
+      return;
+    }
+
     const person = new Person(
       currentGender,
       currentHeight,
@@ -94,6 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentAge,
       currentActivity
     );
+
     calcResult.textContent = person.calories();
   }
 
@@ -135,11 +151,10 @@ document.addEventListener("DOMContentLoaded", () => {
     calc();
   }
 
-
   addEvent(activity);
   addEvent(gender);
 
-  height.addEventListener("change", (e) => changeHeight(e));
-  weight.addEventListener("change", (e) => changeWeight(e));
-  age.addEventListener("change", (e) => changeAge(e));
+  height.addEventListener("input", (e) => changeHeight(e));
+  weight.addEventListener("input", (e) => changeWeight(e));
+  age.addEventListener("input", (e) => changeAge(e));
 });
