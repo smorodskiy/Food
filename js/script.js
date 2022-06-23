@@ -35,21 +35,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // new Cards('img/tabs/vegy.jpg', 'vegy', 'Фитнес', 'description', 123, '.menu .container');
-  // new Cards('img/tabs/vegy.jpg', 'vegy', 'Фитнес1', 'description', 123, '.menu .container');
-
   // Переменный с элементами Верхнего банера страницы
   const tabs = document.querySelector(".tabheader__items"),
-    // Меню
-    tabItems = document.querySelectorAll(".tabheader__item"),
-    // Банер
-    tabContent = document.querySelectorAll(".tabcontent"),
-    // Кнопка Связаться с нами
-    submitBtn = document.querySelectorAll("[data-submit]");
-  // Модальное окно
-  modal = document.querySelector(".modal");
-  // Кнопка закрыть модальное окно
-  closeModalBtn = document.querySelector("[data-modal]");
+        // Меню
+        tabItems = document.querySelectorAll(".tabheader__item"),
+        // Банер
+        tabContent = document.querySelectorAll(".tabcontent"),
+        // Кнопка Связаться с нами
+        submitBtn = document.querySelectorAll("[data-submit]");
+        // Модальное окно
+        modal = document.querySelector(".modal");
+        // Кнопка закрыть модальное окно
+        closeModalBtn = document.querySelector("[data-modal]");
 
   // Закрыть модальное окно
   function closeModal() {
@@ -251,11 +248,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function slideAction(shift) {
     // Change global current slide
     currentSlide += shift;
+
     if (currentSlide < 0) {
-      currentSlide = 0;
+      currentSlide = totalSlides;
     }
     if (currentSlide > totalSlides) {
-      currentSlide = totalSlides;
+      currentSlide = 0;
     }
 
     positionPX = currentSlide * slideWidth;
@@ -295,4 +293,8 @@ document.addEventListener("DOMContentLoaded", () => {
   prev.addEventListener("click", () => {
     slideAction(-1);
   });
+
+
+
+
 });
