@@ -167,12 +167,12 @@
         <div class="calculating__field">
           <div class="calculating__subtitle">Ваш пол</div>
           <div class="calculating__choose" id="gender">
-            <div
-              class="calculating__choose-item calculating__choose-item_active"
+            <div id="female"
+              class="calculating__choose-item"
             >
               Женщина
             </div>
-            <div class="calculating__choose-item">Мужчина</div>
+            <div id="male" class="calculating__choose-item">Мужчина</div>
           </div>
 
           <div class="calculating__subtitle">Ваша конституция</div>
@@ -182,31 +182,34 @@
               id="height"
               placeholder="Введите рост"
               class="calculating__choose-item"
+              maxlength="3"
             />
             <input
               type="text"
               id="weight"
               placeholder="Введите вес"
               class="calculating__choose-item"
+              maxlength="3"
             />
             <input
               type="text"
               id="age"
               placeholder="Введите возраст"
               class="calculating__choose-item"
+              maxlength="3"
             />
           </div>
 
           <div class="calculating__subtitle">
             Выберите вашу физическая активность
           </div>
-          <div class="calculating__choose calculating__choose_big">
+          <div id="activity" class="calculating__choose calculating__choose_big">
             <div id="low" class="calculating__choose-item">
               Низкая активность
             </div>
             <div
               id="small"
-              class="calculating__choose-item calculating__choose-item_active"
+              class="calculating__choose-item"
             >
               Невысокая активность
             </div>
