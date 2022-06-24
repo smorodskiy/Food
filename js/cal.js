@@ -18,10 +18,10 @@ document.addEventListener("DOMContentLoaded", () => {
         activityNum = 0;
 
       switch (this.gender) {
-        case 0:
+        case "male":
           genFormula = -161;
           break;
-        case 1:
+        case "female":
           genFormula = 5;
           break;
         default:
@@ -30,16 +30,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       switch (this.activity) {
-        case 0:
+        case "low":
           activityNum = 0.2;
           break;
-        case 1:
+        case "small":
           activityNum = 0.3;
           break;
-        case 2:
+        case "medium":
           activityNum = 0.4;
           break;
-        case 3:
+        case "high":
           activityNum = 0.5;
           break;
         default:
@@ -47,70 +47,61 @@ document.addEventListener("DOMContentLoaded", () => {
           break;
       }
 
-      formula =
-        10 * this.weight + 6.25 * this.growth - 5 * this.age + genFormula;
+      formula = 10 * this.weight + 6.25 * this.growth - 5 * this.age + genFormula;
 
       activityNum *= formula;
 
-      return formula + activityNum;
+      return Math.round(formula + activityNum);
     }
   }
 
-  // button
-  const gender = document.getElementById("gender");
-  // inputs
-  const height = document.getElementById("height");
-  const weight = document.getElementById("weight");
-  const age = document.getElementById("age");
+  // init
 
-  // buttons
-  // calculating__choose_big
-  const low = document.getElementById("low");
-  const small = document.getElementById("small");
-  const medium = document.getElementById("medium");
-  const high = document.getElementById("high");
-  const activity = document.querySelector(".calculating__choose_big");
-  // result
+  let gender = "female",
+    height,
+    weight,
+    age,
+    activity = "small";
+
   const calcResult = document.querySelector(".calculating__result span");
 
-  // init
-  let currentGender;
-  let currentHeight;
-  let currentWeight;
-  let currentAge;
-  let currentActivity;
+  activityElements = document.querySelector(".calculating__choose_big");
+  genderElements = document.querySelector("#gender");
+  inputsParent = document.querySelector(".calculating__choose_medium");
+  inputElements = inputsParent.children;
 
-  function calc(element, index) {
-    if (element && element.classList.contains("calculating__choose_big")) {
-      currentActivity = +index;
+  (function initial() {
+    if (localStorage.getItem("gender")) {
+      gender = localStorage.getItem("gender");
     }
-    if (element && element.id == "gender") {
-      currentGender = +index;
+    if (localStorage.getItem("activity")) {
+      activity = localStorage.getItem("activity");
     }
 
-    console.log(
-      `${currentGender} ${currentHeight} ${currentWeight} ${currentAge} ${currentActivity}`
-    );
-    if (
-      !isFinite(currentGender) ||
-      !isFinite(currentHeight) ||
-      !isFinite(currentWeight) ||
-      !isFinite(currentAge) ||
-      !isFinite(currentActivity)
-    ) {
-      calcResult.textContent = "____";
-      return;
+    removeActiveClass(genderElements);
+    removeActiveClass(activityElements);
+
+    function setActiveClass(parent) {
+      for (const element of parent.children) {
+        if (element.getAttribute("id") == gender) {
+          element.classList.add("calculating__choose-item_active");
+        }
+
+        if (element.getAttribute("id") == activity) {
+          element.classList.add("calculating__choose-item_active");
+        }
+      }
     }
 
-    const person = new Person(
-      currentGender,
-      currentHeight,
-      currentWeight,
-      currentAge,
-      currentActivity
-    );
+    setActiveClass(activityElements);
+    setActiveClass(genderElements);
 
-    calcResult.textContent = person.calories();
+    calc();
+  })();
+
+  for (const input of inputElements) {
+    //console.log(element);
+    inputsEvent(input);
   }
 
   // Remove active highlight
@@ -121,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Events on buttons
-  function addEvent(element) {
+  function buttonsEvent(element) {
     element.addEventListener("click", (e) => {
       const event = e.target;
       if (
@@ -131,30 +122,109 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         removeActiveClass(element);
         event.classList.add("calculating__choose-item_active");
-        const index = Array.from(element.children).indexOf(event);
 
-        calc(element, index);
+        const index = Array.from(element.children).indexOf(event) + 1;
+
+        if (element.getAttribute("id") == "gender") {
+          switch (index) {
+            case 1:
+              gender = "female";
+              break;
+            case 2:
+              gender = "male";
+              break;
+          }
+        }
+
+        if (element.getAttribute("id") == "activity") {
+          switch (index) {
+            case 1:
+              activity = "low";
+              break;
+            case 2:
+              activity = "small";
+              break;
+            case 3:
+              activity = "medium";
+              break;
+            case 4:
+              activity = "high";
+              break;
+          }
+          console.log(activity);
+        }
+
+        calc();
       }
     });
   }
 
-  function changeHeight(e) {
-    currentHeight = e.target.value;
-    calc();
-  }
-  function changeWeight(e) {
-    currentWeight = e.target.value;
-    calc();
-  }
-  function changeAge(e) {
-    currentAge = e.target.value;
-    calc();
+  buttonsEvent(activityElements);
+  buttonsEvent(genderElements);
+
+  function inputsEvent(input) {
+    input.addEventListener("input", (e) => {
+      const attr = input.getAttribute("id");
+
+      switch (attr) {
+        case "height":
+          height = +input.value;
+          break;
+        case "weight":
+          weight = +input.value;
+          break;
+        case "age":
+          age = +input.value;
+          break;
+      }
+
+      if (checkInputs()) {
+        input.style.border = "solid #FF0000";
+      } else {
+        input.style.border = "";
+        calc();
+      }
+    });
   }
 
-  addEvent(activity);
-  addEvent(gender);
+  function checkInputs() {
+    // if (!height || !weight || !age) return;
 
-  height.addEventListener("input", (e) => changeHeight(e));
-  weight.addEventListener("input", (e) => changeWeight(e));
-  age.addEventListener("input", (e) => changeAge(e));
+    if (height > 250 || weight > 200 || age > 100 || height < 50 || weight < 10 || age < 1) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  function calc() {
+    localStorage.setItem("gender", gender);
+    localStorage.setItem("activity", activity);
+
+    console.log(`${gender}, ${height}, ${weight}, ${age}, ${activity}`);
+
+    if (checkInputs()) {
+      const person = new Person(gender, height, weight, age, activity);
+      calcResult.textContent = person.calories();
+    } else {
+      calcResult.textContent = "____";
+    }
+  }
+
+  // const fruitBasket = ['banana', 'cherry', 'orange', 'apple',
+  // 'cherry', 'orange', 'apple', 'banana', 'cherry', 'orange', 'fig' ];
+  // const div = fruitBasket.reduce((acc, index) => {
+  //   if (!acc[index]) {
+  //     acc[index] = 1;
+  //   } else {
+  //     acc[index] += 1;
+  //   }
+  //   return acc;
+  // }, {});
+
+  // let sortable = Object.entries(div);
+
+  // sortable.sort((a, b) => b[1]-a[1]);
+
+  // console.log(sortable);
 });
