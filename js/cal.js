@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+function cal() {
   class Person {
     constructor(gender, growth, weight, age, activity) {
       this.gender = gender;
@@ -227,4 +227,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // sortable.sort((a, b) => b[1]-a[1]);
 
   // console.log(sortable);
-});
+};
+
+module.exports = cal();
