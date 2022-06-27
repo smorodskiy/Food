@@ -1,10 +1,10 @@
-function tabs() {
+function tabs(tabSelector, itemSelector, contentSelector, activeClass) {
   // Переменный с элементами Верхнего банера страницы
-  const tabs = document.querySelector(".tabheader__items"),
+  const tabs = document.querySelector(tabSelector),
     // Меню
-    tabItems = document.querySelectorAll(".tabheader__item"),
+    tabItems = document.querySelectorAll(itemSelector),
     // Банер
-    tabContent = document.querySelectorAll(".tabcontent");
+    tabContent = document.querySelectorAll(contentSelector);
 
   // Скрыть все баннеры вверху
   function hideAllTabs() {
@@ -15,7 +15,7 @@ function tabs() {
   // Убрать активный класс из списка
   function removeAllActiveClass() {
     tabItems.forEach((element) => {
-      element.classList.remove("tabheader__item_active");
+      element.classList.remove(activeClass);
     });
   }
 
@@ -31,19 +31,19 @@ function tabs() {
 
   tabs.addEventListener("click", (e) => {
     const event = e.target;
-    if (event && event.classList.contains("tabheader__item")) {
+    if (event && event.classList.contains(itemSelector.slice(1))) {
       hideAllTabs();
       removeAllActiveClass();
-      tabItems.forEach((item, i) => {
+      tabItems.forEach((item, i) => {1
         if (event == item) {
-          //console.log(i);
+          console.log(i);
           showTab(i);
         }
       });
 
-      event.classList.toggle("tabheader__item_active");
+      event.classList.toggle(activeClass);
     }
   });
 }
 
-module.exports = tabs();
+export default tabs;

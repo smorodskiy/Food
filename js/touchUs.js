@@ -72,4 +72,4 @@ function touchUs() {
 
 }
 
-module.exports = touchUs();
+export default  touchUs;

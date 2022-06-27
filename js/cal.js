@@ -65,10 +65,10 @@ function cal() {
 
   const calcResult = document.querySelector(".calculating__result span");
 
-  activityElements = document.querySelector(".calculating__choose_big");
-  genderElements = document.querySelector("#gender");
-  inputsParent = document.querySelector(".calculating__choose_medium");
-  inputElements = inputsParent.children;
+  let activityElements = document.querySelector(".calculating__choose_big");
+  let genderElements = document.querySelector("#gender");
+  let inputsParent = document.querySelector(".calculating__choose_medium");
+  let inputElements = inputsParent.children;
 
   (function initial() {
     if (localStorage.getItem("gender")) {
@@ -229,4 +229,4 @@ function cal() {
   // console.log(sortable);
 };
 
-module.exports = cal();
+export default cal;

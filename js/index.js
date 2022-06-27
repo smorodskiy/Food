@@ -1,15 +1,15 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const cal = require("./cal"),
-    touchUs = require("./touchUs"),
-    slider = require("./slider"),
-    cards = require("./cards"),
-    promo = require("./promo"),
-    tabs = require("./tabs");
+import slider from "./slider";
+import cal from "./cal";
+import touchUs from "./touchUs";
+import cards from "./cards";
+import promo from "./promo";
+import tabs from "./tabs";
 
-  touchUs();
+document.addEventListener("DOMContentLoaded", () => {
   slider();
-  promo();
-  tabs();
+  touchUs();
+  promo('2022-06-30');
+  tabs(".tabheader__items", ".tabheader__item", ".tabcontent", "tabheader__item_active");
   cards();
   cal();
 });

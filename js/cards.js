@@ -1,3 +1,5 @@
+import { getJsonFromUrl } from "./services/services";
+
 function cards() {
   // Шаблон карт(высота, ширина, название меню, текст меню, цена)
   class Cards {
@@ -34,11 +36,10 @@ function cards() {
       this.parent.append(element);
     }
   }
-
-  // Get запрос на сервер и получение данный в виде JSON
-  fetch("http://localhost:3000/menu")
-    .then((response) => response.json())
-    .then((json) => renderData(json));
+  
+  getJsonFromUrl("http://localhost:3000/menu").then((jsonData) => {  
+    renderData(jsonData);
+  });
 
   // Отобразить меню на странице
   function renderData(jsonData) {
@@ -48,4 +49,4 @@ function cards() {
   }
 }
 
-module.exports = cards();
+export default cards;
