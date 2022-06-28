@@ -1,6 +1,7 @@
-'use strict';
+"use strict";
 
-const path = require('path');
+const path = require("path");
+const webpack = require('webpack');
 
 module.exports = {
   mode: "development", // "production" | "development" | "none"
@@ -11,7 +12,7 @@ module.exports = {
   // and webpack starts bundling
   output: {
     // options related to how webpack emits results
-    path:path.resolve(__dirname, "js"), // string (default)
+    path: path.resolve(__dirname, "js"), // string (default)
     // the target directory for all output files
     // must be an absolute path (use the Node.js path module)
     filename: "main.js", // string (default)
@@ -22,4 +23,11 @@ module.exports = {
   watch: true,
   devtool: "source-map",
   module: {},
-}
+  plugins: [
+    // fix "process is not defined" error:
+    // (do "npm install process" before running the build)
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
+  ]
+};
