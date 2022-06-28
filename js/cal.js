@@ -1,3 +1,6 @@
+import $, { type } from "jquery";
+import typeIs from "type-is";
+
 function cal() {
   class Person {
     constructor(gender, growth, weight, age, activity) {
@@ -63,12 +66,12 @@ function cal() {
     age,
     activity = "small";
 
-  const calcResult = document.querySelector(".calculating__result span");
+  let calcResult = $(".calculating__result span");
 
-  let activityElements = document.querySelector(".calculating__choose_big");
-  let genderElements = document.querySelector("#gender");
-  let inputsParent = document.querySelector(".calculating__choose_medium");
-  let inputElements = inputsParent.children;
+  let activityElements = $(".calculating__choose_big").children();
+  let genderElements = $("#gender").children();
+  let inputsParent = $(".calculating__choose_medium");
+  let inputElements = $(inputsParent).children();
 
   (function initial() {
     if (localStorage.getItem("gender")) {
@@ -81,16 +84,17 @@ function cal() {
     removeActiveClass(genderElements);
     removeActiveClass(activityElements);
 
-    function setActiveClass(parent) {
-      for (const element of parent.children) {
-        if (element.getAttribute("id") == gender) {
-          element.classList.add("calculating__choose-item_active");
+    function setActiveClass(elements) {
+      elements.each(function () {
+        if ($(this).attr("id") == gender) {
+          $(this).addClass("calculating__choose-item_active");
+          // console.log($(this).attr("id"));
         }
 
-        if (element.getAttribute("id") == activity) {
-          element.classList.add("calculating__choose-item_active");
+        if ($(this).attr("id") == activity) {
+          $(this).addClass("calculating__choose-item_active");
         }
-      }
+      });
     }
 
     setActiveClass(activityElements);
@@ -99,33 +103,32 @@ function cal() {
     calc();
   })();
 
-  for (const input of inputElements) {
-    //console.log(element);
-    inputsEvent(input);
-  }
-
   // Remove active highlight
   function removeActiveClass(element) {
-    for (let i = 0; i < element.children.length; i++) {
-      element.children[i].classList.remove("calculating__choose-item_active");
+    for (let i = 0; i < $(element).length; i++) {
+      $(element[i]).removeClass("calculating__choose-item_active");
     }
   }
 
   // Events on buttons
   function buttonsEvent(element) {
-    element.addEventListener("click", (e) => {
-      const event = e.target;
+    element.click(function () {
+      // console.log(e);
       if (
-        event &&
-        event.classList.contains("calculating__choose-item") &&
-        !event.classList.contains("calculating__choose-item_active")
+        this &&
+        $(this).hasClass("calculating__choose-item") &&
+        !$(this).hasClass("calculating__choose-item_active")
       ) {
+        // console.log(this);
         removeActiveClass(element);
-        event.classList.add("calculating__choose-item_active");
+        $(this).addClass("calculating__choose-item_active");
 
-        const index = Array.from(element.children).indexOf(event) + 1;
+        // current index of this element
+        let index = $(this).index() + 1;
 
-        if (element.getAttribute("id") == "gender") {
+        console.log($(this).parent().attr("id"));
+
+        if ($(this).parent().attr("id") == "gender") {
           switch (index) {
             case 1:
               gender = "female";
@@ -134,9 +137,8 @@ function cal() {
               gender = "male";
               break;
           }
-        }
 
-        if (element.getAttribute("id") == "activity") {
+        } else {
           switch (index) {
             case 1:
               activity = "low";
@@ -151,9 +153,10 @@ function cal() {
               activity = "high";
               break;
           }
-          console.log(activity);
+          // console.log(activity);
         }
 
+        saveToStorage();
         calc();
       }
     });
@@ -162,52 +165,83 @@ function cal() {
   buttonsEvent(activityElements);
   buttonsEvent(genderElements);
 
+  for (const input of inputElements) {
+    inputsEvent(input);
+  }
+
   function inputsEvent(input) {
-    input.addEventListener("input", (e) => {
-      const attr = input.getAttribute("id");
+    $(input).on("input", () => {
+      const attr = $(input).attr("id");
 
       switch (attr) {
         case "height":
-          height = +input.value;
+          height = +$(input).val();
           break;
         case "weight":
-          weight = +input.value;
+          weight = +$(input).val();
           break;
         case "age":
-          age = +input.value;
+          age = +$(input).val();
           break;
       }
 
-      if (checkInputs()) {
-        input.style.border = "solid #FF0000";
-      } else {
-        input.style.border = "";
+      if (checkInputs(input)) {
+        $(input).css("border", "");
         calc();
+      } else {
+        $(input).css("border", "solid #FF0000");
       }
     });
   }
 
-  function checkInputs() {
-    // if (!height || !weight || !age) return;
-
-    if (height > 250 || weight > 200 || age > 100 || height < 50 || weight < 10 || age < 1) {
-      return false;
-    } else {
-      return true;
+  function checkInputs(input) {
+    if ($(input).attr("id") == "height") {
+      let height_ = +$(input).val();
+      if (height_ > 250 || height_ < 50) {
+        $(calcResult).text("___");
+        return false;        
+      }
     }
+    if ($(input).attr("id") == "weight") {
+      let weight_ = +$(input).val();
+      if (weight_ > 150 || weight_ < 10) {
+        $(calcResult).text("___");
+        return false;        
+      }
+    }
+    if ($(input).attr("id") == "age") {
+      let age_ = +$(input).val();
+      if (age_ > 100 || age_ < 1) {
+        $(calcResult).text("___");
+        return false;        
+      }
+    }
+
+    return true;
+  }
+
+  function saveToStorage() {
+    localStorage.setItem("gender", gender);
+    localStorage.setItem("activity", activity);
   }
 
   function calc() {
-    localStorage.setItem("gender", gender);
-    localStorage.setItem("activity", activity);
+
+    if (typeof(height) != "number" && typeof(weight) != "number" && typeof(age) != "number") {
+      return false;
+    }
+    if (height > 250 || height < 50 || weight > 150 || weight < 10 || age > 100 || age < 1) {
+      return false;
+    }
 
     console.log(`${gender}, ${height}, ${weight}, ${age}, ${activity}`);
-
-    if (checkInputs()) {
-      const person = new Person(gender, height, weight, age, activity);
-      calcResult.textContent = person.calories();
+    
+    const total = new Person(gender, height, weight, age, activity).calories();
+    console.log(total);
+    if (isNaN(total)) {      
+      $(calcResult).text("___");      
     } else {
-      calcResult.textContent = "____";
+      $(calcResult).text(total);
     }
   }
 
@@ -227,6 +261,6 @@ function cal() {
   // sortable.sort((a, b) => b[1]-a[1]);
 
   // console.log(sortable);
-};
+}
 
 export default cal;
