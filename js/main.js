@@ -13958,8 +13958,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// import { tns } from "../node_modules/tiny-slider/src/tiny-slider";
 
 document.addEventListener("DOMContentLoaded", () => {
+  
+  // var slider = tns({
+  //   container: '.my-slider',
+  //   items: 3,
+  //   slideBy: 'page',
+  //   autoplay: true
+  // });
+
   (0,_slider__WEBPACK_IMPORTED_MODULE_0__["default"])();
   (0,_touchUs__WEBPACK_IMPORTED_MODULE_2__["default"])();
   (0,_promo__WEBPACK_IMPORTED_MODULE_4__["default"])('2022-06-30');

@@ -4,8 +4,17 @@ import touchUs from "./touchUs";
 import cards from "./cards";
 import promo from "./promo";
 import tabs from "./tabs";
+// import { tns } from "../node_modules/tiny-slider/src/tiny-slider";
 
 document.addEventListener("DOMContentLoaded", () => {
+  
+  // var slider = tns({
+  //   container: '.my-slider',
+  //   items: 3,
+  //   slideBy: 'page',
+  //   autoplay: true
+  // });
+
   slider();
   touchUs();
   promo('2022-06-30');
