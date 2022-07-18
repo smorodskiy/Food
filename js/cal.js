@@ -58,7 +58,7 @@ function cal() {
     }
   }
 
-  // init
+  // init.
 
   let gender = "female",
     height,
