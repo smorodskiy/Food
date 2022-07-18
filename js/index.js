@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   //   autoplay: true
   // });
 
+  
   slider();
   touchUs();
   promo('2022-06-30');
